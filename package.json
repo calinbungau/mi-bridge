@@ -1,0 +1,21 @@
+{
+  "name": "mi-bridge",
+  "version": "1.0.0",
+  "description": "Traccar -> Eurowag/Dispecer.sk Multi-Interface bridge (VIMAREK)",
+  "main": "mi-bridge.js",
+  "private": true,
+  "scripts": {
+    "start": "node mi-bridge.js -c config.yaml",
+    "dry": "node mi-bridge.js -c config.yaml --dry-run --once-catalogue",
+    "test-connection": "node mi-bridge.js -c config.yaml --echo --once-catalogue -v",
+    "pm2": "pm2 start ecosystem.config.js",
+    "logs": "pm2 logs mi-bridge"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "js-yaml": "^4.1.0",
+    "sax": "^1.4.1",
+    "ssh2": "^1.16.0"
+  }
+}

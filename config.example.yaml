@@ -1,0 +1,67 @@
+# Traccar -> Eurowag Multi-Interface (MI) bridge — configurație
+# Fișierul real se numește config.yaml (copie a acestuia). Completezi ce e marcat cu <<< ... >>>
+
+mi:
+  host: 217.73.17.143
+  port: 722
+  subsystem: linterface
+  login: "<<< LOGIN PRIMIT DE LA EUROWAG >>>"   # îl primești după ce le trimiți cheia publică mi_id_rsa.pub
+  private_key: /opt/mi-bridge/mi_id_rsa        # cheia SSH generată la instalare (fără parolă)
+  keepalive_sec: 30
+
+traccar:
+  url: "http://127.0.0.1:8082"                 # Traccar de pe același server; dacă e în alt loc: "https://gps.firma.ro"
+  user: "<<< USER TRACCAR >>>"                 # un user care vede cele 12 camioane VIMAREK (de preferat admin)
+  password: "<<< PAROLA TRACCAR >>>"
+  # alternativ, în loc de user/parolă poți pune un token (Traccar: Settings -> Account -> Token):
+  # token: "..."
+  timeout_sec: 20
+
+poll_interval_sec: 60              # cât de des citim poziții noi (spec: max 5 min în mers)
+standing_state_interval_sec: 900   # vehicul oprit: <state> cel puțin la 15 min (spec)
+catalogue_interval_sec: 3600       # retrimitem catalogul la fiecare oră (spec)
+stop_filter_sec: 120               # opririle sub 2 min (intersecții, blocaje) nu se raportează ca motor oprit
+
+# datele noastre — apar în TM; MI trimite email aici dacă sunt probleme cu vehiculele
+provider:
+  name: "BNG Tracking"
+  additional_name: "VIMAREK"
+  contact:
+    is24x7: 0
+    name: "Suport BNG Tracking"
+    telnum: "+40745312399"
+    email: "office@bngsmartsolutions.ro"
+
+# centrele logistice le trimite MI la conectare (<lcenterList>); lasă gol
+lcenters: []
+
+# transportatorul — numele EXACT cum e în TM-ul Eurowag (e cheie unică!)
+subcontractors:
+  - name: "VIMAREK LOGISTIC SRL"
+    vat: "RO45134100"
+    contact:
+      is24x7: 0
+      name: "Madalin Pop"
+      telnum: "+40758024381"
+      email: "office@vimarek.ro"
+
+# camioanele VIMAREK — imei = Identificatorul din Traccar; vrn = nr. înmatriculare (obligatoriu)
+# vin (seria șasiului) e cerut de spec — completează când îl ai, până atunci poate rămâne gol
+vehicles:
+  - { imei: "867747075203529", vrn: "BH-21-VLR", vin: "" }
+  - { imei: "867747076627155", vrn: "BH-03-VLR", vin: "" }
+  - { imei: "863738070818845", vrn: "B-99-VLR",  vin: "" }
+  - { imei: "867747077174694", vrn: "B-21-VLR",  vin: "" }
+  - { imei: "861076085095097", vrn: "BH-30-VLR", vin: "" }
+  - { imei: "861076085476768", vrn: "BH-55-VLR", vin: "" }
+  - { imei: "868373073385769", vrn: "BH-88-VLR", vin: "" }
+  - { imei: "866107081844355", vrn: "BH-07-VLR", vin: "" }
+  - { imei: "868618086789641", vrn: "BH-35-VLR", vin: "" }
+  - { imei: "866107081787570", vrn: "BH-31-VLR", vin: "" }
+  - { imei: "868618086740487", vrn: "BH-61-VLR", vin: "" }
+  - { imei: "868618086865482", vrn: "BH-54-VLR", vin: "" }
+# opțiuni per vehicul (dacă e cazul): ignition_attr: ignition | motion | in1 ; door_sensor: 1 + door_attr: in2 ;
+# panic_button: 1 + panic_attr: alarm ; temperature_sensors: [{tsid: "1", name: "Frigorific", position: 5, attr: temp1}]
+
+trailers: []   # remorci nemonitorizate: - { tid: "T1", vrn: "BH-99-XYZ", vin: "..." }
+drivers: []    # șoferi: - { did: "D1", name: "Ion", surname: "Popescu", telnum: "+40...", driver_card: "RO..." }
